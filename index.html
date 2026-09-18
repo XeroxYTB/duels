@@ -257,19 +257,19 @@ details.adv[open] summary::after{transform:rotate(180deg)}
   const fmtT = (t, d = 2) => t.toFixed(d).replace('.', ',') + ' s';
 
   /* ---------- PARAMÈTRES (un jeu de règles par niveau) ---------- */
-  const MAXES = [25, 30, 50, 75, 100];
+  const MAXES = [15, 25, 30, 50, 75, 100];
   const LEVELNAMES = { 1: 'Facile', 2: 'Intermédiaire', 3: 'Difficile' };
   const DEFAULTS = {
-    1: { add: { min: 0, max: 25,  terms: 1 },
-         sub: { min: 0, max: 25,  terms: 1, neg: false },
+    1: { add: { min: 10, max: 25,  terms: 1 },
+         sub: { min: 10, max: 25,  terms: 1, neg: false },
          mul: { tables: [2, 3, 4, 5] },
          div: { tables: [2, 3, 4, 5], maxQ: 10 } },
-    2: { add: { min: 0, max: 50,  terms: 2 },
-         sub: { min: 0, max: 50,  terms: 1, neg: false },
+    2: { add: { min: 10, max: 50,  terms: 2 },
+         sub: { min: 10, max: 50,  terms: 1, neg: false },
          mul: { tables: [2, 3, 4, 5, 6, 7] },
          div: { tables: [2, 3, 4, 5, 6, 7], maxQ: 10 } },
-    3: { add: { min: 0, max: 100, terms: 2 },
-         sub: { min: 0, max: 100, terms: 2, neg: false },
+    3: { add: { min: 10, max: 100, terms: 2 },
+         sub: { min: 10, max: 100, terms: 2, neg: false },
          mul: { tables: range(2, 10) },
          div: { tables: range(2, 10), maxQ: 12 } }
   };
