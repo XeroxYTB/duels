@@ -257,19 +257,19 @@ details.adv[open] summary::after{transform:rotate(180deg)}
   const fmtT = (t, d = 2) => t.toFixed(d).replace('.', ',') + ' s';
 
   /* ---------- PARAMÈTRES (un jeu de règles par niveau) ---------- */
-  const MAXES = [15, 25, 30, 50, 75, 100];
+  const MAXES = [10, 15, 25, 30, 50, 75, 100];
   const LEVELNAMES = { 1: 'Facile', 2: 'Intermédiaire', 3: 'Difficile' };
   const DEFAULTS = {
-    1: { add: { min: 10, max: 25,  terms: 1 },
-         sub: { min: 10, max: 25,  terms: 1, neg: false },
+    1: { add: { min: 0, max: 25,  terms: 1 },
+         sub: { min: 0, max: 25,  terms: 1, neg: false },
          mul: { tables: [2, 3, 4, 5] },
          div: { tables: [2, 3, 4, 5], maxQ: 10 } },
-    2: { add: { min: 10, max: 50,  terms: 2 },
-         sub: { min: 10, max: 50,  terms: 1, neg: false },
+    2: { add: { min: 0, max: 50,  terms: 2 },
+         sub: { min: 0, max: 50,  terms: 1, neg: false },
          mul: { tables: [2, 3, 4, 5, 6, 7] },
          div: { tables: [2, 3, 4, 5, 6, 7], maxQ: 10 } },
-    3: { add: { min: 10, max: 100, terms: 2 },
-         sub: { min: 10, max: 100, terms: 2, neg: false },
+    3: { add: { min: 0, max: 100, terms: 2 },
+         sub: { min: 0, max: 100, terms: 2, neg: false },
          mul: { tables: range(2, 10) },
          div: { tables: range(2, 10), maxQ: 12 } }
   };
@@ -280,6 +280,24 @@ details.adv[open] summary::after{transform:rotate(180deg)}
     levels: clone(DEFAULTS)
   };
   const FIXED_LEVEL = 2;
+
+  // localStorage pour persister les paramètres
+  function saveCfg() {
+    try { localStorage.setItem('duelCalcCfg', JSON.stringify(cfg)); } catch (e) {}
+  }
+
+  function loadCfg() {
+    try {
+      const saved = localStorage.getItem('duelCalcCfg');
+      if (saved) {
+        const loaded = JSON.parse(saved);
+        cfg.players = loaded.players ?? 2;
+        cfg.ops = loaded.ops ?? cfg.ops;
+        cfg.target = loaded.target ?? 10;
+        cfg.levels = loaded.levels ?? cfg.levels;
+      }
+    } catch (e) {}
+  }
   const AV = ['🦊', '🐼', '🐸'];
 
   /* ---------- GÉNÉRATEUR DE QUESTIONS ---------- */
@@ -405,21 +423,21 @@ details.adv[open] summary::after{transform:rotate(180deg)}
 
   $('#pcount').addEventListener('click', e => {
     const b = e.target.closest('.pc'); if (!b) return;
-    cfg.players = +b.dataset.val; syncSetup();
+    cfg.players = +b.dataset.val; syncSetup(); saveCfg();
   });
   $('#ops').addEventListener('click', e => {
     const b = e.target.closest('.op'); if (!b) return;
-    cfg.ops[b.dataset.op] = !cfg.ops[b.dataset.op]; syncSetup();
+    cfg.ops[b.dataset.op] = !cfg.ops[b.dataset.op]; syncSetup(); saveCfg();
   });
   $('#targets').addEventListener('click', e => {
     const b = e.target.closest('.tgt'); if (!b) return;
-    cfg.target = +b.dataset.val; syncSetup();
+    cfg.target = +b.dataset.val; syncSetup(); saveCfg();
   });
 
   $('#advBody').addEventListener('click', e => {
     const b = e.target.closest('[data-act]'); if (!b || b.tagName === 'INPUT') return;
     const act = b.dataset.act, op = b.dataset.op, v = +b.dataset.val;
-    if (act === 'reset') { cfg.levels[FIXED_LEVEL] = clone(DEFAULTS[FIXED_LEVEL]); renderAdv(); return; }
+    if (act === 'reset') { cfg.levels[FIXED_LEVEL] = clone(DEFAULTS[FIXED_LEVEL]); renderAdv(); saveCfg(); return; }
     const o = cfg.levels[FIXED_LEVEL][op];
     if (act === 'max') { o.max = v; if (o.min >= v) o.min = Math.max(0, v - 1); }
     else if (act === 'terms') o.terms = v;
@@ -429,14 +447,14 @@ details.adv[open] summary::after{transform:rotate(180deg)}
       const i = o.tables.indexOf(v);
       if (i > -1) o.tables.splice(i, 1); else { o.tables.push(v); o.tables.sort((a, b) => a - b); }
     }
-    renderAdv();
+    renderAdv(); saveCfg();
   });
   $('#advBody').addEventListener('change', e => {
     const i = e.target.closest('input[data-act="min"]'); if (!i) return;
     const o = cfg.levels[FIXED_LEVEL][i.dataset.op];
     let v = parseInt(i.value, 10); if (isNaN(v)) v = 0;
     v = Math.max(0, Math.min(v, o.max - 1));
-    o.min = v; i.value = v;
+    o.min = v; i.value = v; saveCfg();
   });
 
   function validate() {
@@ -686,6 +704,8 @@ details.adv[open] summary::after{transform:rotate(180deg)}
     }
   });
 
+  syncSetup();
+  loadCfg();
   syncSetup();
 })();
 </script>
