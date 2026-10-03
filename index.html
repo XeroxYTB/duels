@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Duel de calcul</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22%3E%3Crect x=%226%22 y=%2212%22 width=%22108%22 height=%22104%22 rx=%2230%22 fill=%22%232B1D5B%22/%3E%3Crect x=%226%22 y=%226%22 width=%22108%22 height=%22104%22 rx=%2230%22 fill=%22%23FFD23F%22 stroke=%22%232B1D5B%22 stroke-width=%226%22/%3E%3Ccircle cx=%2242%22 cy=%2256%22 r=%2224%22 fill=%22%233A5FF0%22 stroke=%22%232B1D5B%22 stroke-width=%225%22/%3E%3Ccircle cx=%2278%22 cy=%2256%22 r=%2224%22 fill=%22%23E5266E%22 stroke=%22%232B1D5B%22 stroke-width=%225%22/%3E%3Cg stroke=%22%23fff%22 stroke-width=%226%22 stroke-linecap=%22round%22 fill=%22none%22%3E%3Cpath d=%22M42 47v18M33 56h18%22/%3E%3Cpath d=%22M70 48l16 16M86 48L70 64%22/%3E%3C/g%3E%3Cg stroke=%22%232B1D5B%22 stroke-width=%225%22 stroke-linecap=%22round%22%3E%3Cpath d=%22M50 92h20M50 100h20%22/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -277,7 +278,6 @@ details.adv[open] summary::after{transform:rotate(180deg)}
   <!-- JEU -->
   <section id="game" hidden>
     <div class="topbar">
-      <button class="btn sm ghost" id="btnMenu">← Réglages</button>
       <div class="info"><span id="goal"></span> · <span id="roundNo"></span></div>
       <div class="tb">
         <button class="btn sm ghost" id="btnPause" aria-label="Pause">Pause</button>
@@ -845,13 +845,6 @@ details.adv[open] summary::after{transform:rotate(180deg)}
   $('#skip').addEventListener('click', () => { if (G && G.state === 'playing' && !G.paused) endRound(-1); });
   $('#btnPause').addEventListener('click', togglePause);
   $('#resume').addEventListener('click', togglePause);
-  $('#btnMenu').addEventListener('click', () => {
-    clearTimers();
-    if (G) { G.state = 'end'; G.paused = false; }
-    $('#cd').hidden = true;
-    setPauseUI();
-    show('setup');
-  });
   $('#btnSound').addEventListener('click', e => {
     soundOn = !soundOn;
     e.currentTarget.textContent = soundOn ? 'Son' : 'Muet';
